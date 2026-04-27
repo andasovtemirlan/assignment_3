@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import logging
 from datetime import datetime, timedelta, timezone
+
+logger = logging.getLogger(__name__)
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -189,7 +192,8 @@ def logout(
                 token_record.revoked = True
                 db.commit()
     except ValueError:
-        pass
+        # ИСПРАВЛЕНО (CWE-390): вместо pass логируем предупреждение — токен мог не быть аннулирован
+        logger.warning("Could not revoke refresh token during logout for user %s", current_user.id)
 
     write_audit_log(
         db=db,

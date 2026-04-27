@@ -1,0 +1,260 @@
+[
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 32,
+      "row": 4
+    },
+    "filename": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\investigation\\ass3\\app\\api\\assets.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from sqlalchemy import or_, select",
+          "end_location": {
+            "column": 45,
+            "row": 4
+          },
+          "location": {
+            "column": 1,
+            "row": 4
+          }
+        }
+      ],
+      "message": "Remove unused import: `sqlalchemy.distinct`"
+    },
+    "location": {
+      "column": 24,
+      "row": 4
+    },
+    "message": "`sqlalchemy.distinct` imported but unused",
+    "noqa_row": 4,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "E402",
+    "end_location": {
+      "column": 48,
+      "row": 17
+    },
+    "filename": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\investigation\\ass3\\scripts\\seed_data.py",
+    "fix": null,
+    "location": {
+      "column": 1,
+      "row": 17
+    },
+    "message": "Module level import not at top of file",
+    "noqa_row": 17,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file"
+  },
+  {
+    "cell": null,
+    "code": "E402",
+    "end_location": {
+      "column": 55,
+      "row": 18
+    },
+    "filename": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\investigation\\ass3\\scripts\\seed_data.py",
+    "fix": null,
+    "location": {
+      "column": 1,
+      "row": 18
+    },
+    "message": "Module level import not at top of file",
+    "noqa_row": 18,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file"
+  },
+  {
+    "cell": null,
+    "code": "E402",
+    "end_location": {
+      "column": 101,
+      "row": 19
+    },
+    "filename": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\investigation\\ass3\\scripts\\seed_data.py",
+    "fix": null,
+    "location": {
+      "column": 1,
+      "row": 19
+    },
+    "message": "Module level import not at top of file",
+    "noqa_row": 19,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 30,
+      "row": 6
+    },
+    "filename": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\investigation\\ass3\\tests\\security\\test_security_flow.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 7
+          },
+          "location": {
+            "column": 1,
+            "row": 6
+          }
+        }
+      ],
+      "message": "Remove unused import: `sqlalchemy.delete`"
+    },
+    "location": {
+      "column": 24,
+      "row": 6
+    },
+    "message": "`sqlalchemy.delete` imported but unused",
+    "noqa_row": 6,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 32,
+      "row": 10
+    },
+    "filename": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\investigation\\ass3\\tests\\security\\test_security_flow.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from app.db.models import Role, User",
+          "end_location": {
+            "column": 88,
+            "row": 10
+          },
+          "location": {
+            "column": 1,
+            "row": 10
+          }
+        }
+      ],
+      "message": "Remove unused import"
+    },
+    "location": {
+      "column": 27,
+      "row": 10
+    },
+    "message": "`app.db.models.Asset` imported but unused",
+    "noqa_row": 10,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 42,
+      "row": 10
+    },
+    "filename": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\investigation\\ass3\\tests\\security\\test_security_flow.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from app.db.models import Role, User",
+          "end_location": {
+            "column": 88,
+            "row": 10
+          },
+          "location": {
+            "column": 1,
+            "row": 10
+          }
+        }
+      ],
+      "message": "Remove unused import"
+    },
+    "location": {
+      "column": 34,
+      "row": 10
+    },
+    "message": "`app.db.models.AuditLog` imported but unused",
+    "noqa_row": 10,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 62,
+      "row": 10
+    },
+    "filename": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\investigation\\ass3\\tests\\security\\test_security_flow.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from app.db.models import Role, User",
+          "end_location": {
+            "column": 88,
+            "row": 10
+          },
+          "location": {
+            "column": 1,
+            "row": 10
+          }
+        }
+      ],
+      "message": "Remove unused import"
+    },
+    "location": {
+      "column": 44,
+      "row": 10
+    },
+    "message": "`app.db.models.MaintenanceRequest` imported but unused",
+    "noqa_row": 10,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 76,
+      "row": 10
+    },
+    "filename": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\investigation\\ass3\\tests\\security\\test_security_flow.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from app.db.models import Role, User",
+          "end_location": {
+            "column": 88,
+            "row": 10
+          },
+          "location": {
+            "column": 1,
+            "row": 10
+          }
+        }
+      ],
+      "message": "Remove unused import"
+    },
+    "location": {
+      "column": 64,
+      "row": 10
+    },
+    "message": "`app.db.models.RefreshToken` imported but unused",
+    "noqa_row": 10,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  }
+]

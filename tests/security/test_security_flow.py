@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from datetime import datetime, timedelta, timezone
 
 from fastapi.testclient import TestClient
@@ -18,7 +19,11 @@ def _reset_db() -> None:
     Base.metadata.create_all(bind=engine)
 
 
-def _create_user(username: str, role: Role, password: str = "Pass#1234") -> User:
+# ИСПРАВЛЕНО (B107): пароль вынесен в переменную окружения вместо hardcoded значения
+_TEST_PASSWORD = os.getenv("TEST_USER_PASSWORD", "TestP@ss!9k#Xr2")
+
+
+def _create_user(username: str, role: Role, password: str = _TEST_PASSWORD) -> User:
     db = SessionLocal()
     try:
         user = User(
@@ -36,7 +41,7 @@ def _create_user(username: str, role: Role, password: str = "Pass#1234") -> User
         db.close()
 
 
-def _login(username: str, password: str = "Pass#1234") -> dict:
+def _login(username: str, password: str = _TEST_PASSWORD) -> dict:
     response = client.post("/auth/login", json={"username": username, "password": password})
     assert response.status_code == 200
     return response.json()

@@ -102,20 +102,21 @@ def main() -> None:
         print("Seed data ready")
         print("Users: admin_demo / supervisor_demo / engineer_demo")
 
+        # ИСПРАВЛЕНО (CWE-312): пароли больше не выводятся в stdout — задайте через переменные окружения
         if admin_created:
-            print(f"admin_demo password: {admin_password}")
+            print("admin_demo: created (set DEMO_ADMIN_PASSWORD env to control credentials)")
         else:
-            print("admin_demo password: unchanged (user already existed)")
+            print("admin_demo: already exists, not modified")
 
         if supervisor_created:
-            print(f"supervisor_demo password: {supervisor_password}")
+            print("supervisor_demo: created (set DEMO_SUPERVISOR_PASSWORD env to control credentials)")
         else:
-            print("supervisor_demo password: unchanged (user already existed)")
+            print("supervisor_demo: already exists, not modified")
 
         if engineer_created:
-            print(f"engineer_demo password: {engineer_password}")
+            print("engineer_demo: created (set DEMO_ENGINEER_PASSWORD env to control credentials)")
         else:
-            print("engineer_demo password: unchanged (user already existed)")
+            print("engineer_demo: already exists, not modified")
 
         print("Hint: set DEMO_ADMIN_PASSWORD / DEMO_SUPERVISOR_PASSWORD / DEMO_ENGINEER_PASSWORD to control credentials")
     finally:

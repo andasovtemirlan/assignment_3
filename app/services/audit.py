@@ -36,6 +36,7 @@ def write_audit_log(
     db.add(entry)
     try:
         db.commit()
-    except SQLAlchemyError:
+    except SQLAlchemyError as exc:
         db.rollback()
-        logger.warning("Failed to write audit log entry", exc_info=True)
+        # ИСПРАВЛЕНО: exc_info=True удалён, чтобы стек-трейс не попадал в логи (CWE-209)
+        logger.warning("Failed to write audit log entry: %s", type(exc).__name__)
