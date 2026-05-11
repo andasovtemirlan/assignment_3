@@ -3,8 +3,6 @@ from __future__ import annotations
 import logging
 from datetime import datetime, timedelta, timezone
 
-logger = logging.getLogger(__name__)
-
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import or_, select
@@ -18,6 +16,9 @@ from app.db.models import RefreshToken, Role, User
 from app.schemas.auth import LoginRequest, RefreshRequest, RegisterRequest, TokenResponse, UserOut
 from app.schemas.common import MessageResponse
 from app.services.audit import write_audit_log
+from app.services.password_policy import validate_password_policy
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -73,6 +74,9 @@ def _authenticate_user(username: str, password: str, request: Request, db: Sessi
 
 @router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 def register(payload: RegisterRequest, request: Request, db: Session = Depends(get_db)) -> UserOut:
+    # FIXED (CWE-521): Validate password policy
+    validate_password_policy(payload.password)
+
     user_exists = db.scalar(
         select(User.id).where(or_(User.username == payload.username, User.email == payload.email))
     )
@@ -154,21 +158,46 @@ def refresh_tokens(payload: RefreshRequest, db: Session = Depends(get_db)) -> To
     if not jti:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
 
+    # FIXED (CWE-613): Enhance refresh token validation
+    # Check token record exists, is not revoked, and hasn't expired
     token_record = db.scalar(select(RefreshToken).where(RefreshToken.jti == jti, RefreshToken.user_id == user_id))
     now = datetime.now(timezone.utc)
-    if not token_record or token_record.revoked or token_record.expires_at <= now:
+    
+    if not token_record:
+        logger.warning("Refresh token not found in database for user %s", user_id)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
+    
+    if token_record.revoked:
+        logger.warning("Attempted refresh with revoked token for user %s (possible token reuse attack)", user_id)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
+    
+    if token_record.expires_at <= now:
+        logger.warning("Refresh token expired for user %s", user_id)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
 
+    # Verify user still exists and is active
     user = db.get(User, user_id)
     if not user or not user.is_active:
+        logger.warning("User %s inactive or deleted during token refresh", user_id)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
 
+    # Revoke old token before issuing new ones (atomic in single transaction)
     token_record.revoked = True
     new_access = create_access_token(user_id=user.id, role=user.role.value)
     new_refresh, new_jti, new_expires_at = create_refresh_token(user.id)
 
     db.add(RefreshToken(user_id=user.id, jti=new_jti, expires_at=new_expires_at))
     db.commit()
+
+    write_audit_log(
+        db=db,
+        action="TOKEN_REFRESH",
+        entity_type="User",
+        entity_id=user.id,
+        user_id=user.id,
+        details={"old_jti": jti[:8] + "..."},  # Log token hint for audit, not full token
+        request=None,
+    )
 
     return TokenResponse(
         access_token=new_access,
@@ -192,8 +221,8 @@ def logout(
                 token_record.revoked = True
                 db.commit()
     except ValueError:
-        # ИСПРАВЛЕНО (CWE-390): вместо pass логируем предупреждение — токен мог не быть аннулирован
-        logger.warning("Could not revoke refresh token during logout for user %s", current_user.id)
+        # ИСПРАВЛЕНО (CWE-390): вместо pass логируем предупреждение — сессия могла не быть аннулирована
+        logger.warning("Could not revoke refresh session during logout for user %s", current_user.id)
 
     write_audit_log(
         db=db,

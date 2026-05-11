@@ -68,7 +68,6 @@ def ensure_request_access(current_user: User, maintenance_request: MaintenanceRe
 
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
 
-
 def validate_status_transition(
     current_user: User,
     maintenance_request: MaintenanceRequest,
@@ -96,6 +95,21 @@ def validate_status_transition(
     }
     if (maintenance_request.status, new_status) not in engineer_allowed:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+
+
+def apply_status_fields(maintenance_request: MaintenanceRequest, new_status: TaskStatus) -> None:
+    """Apply timestamp updates based on status transitions.
+    
+    Sets started_at when transitioning to IN_PROGRESS and completed_at
+    when transitioning to COMPLETED or CANCELLED.
+    """
+    now = datetime.now(timezone.utc)
+    
+    if new_status == TaskStatus.IN_PROGRESS and not maintenance_request.started_at:
+        maintenance_request.started_at = now
+    
+    if new_status in {TaskStatus.COMPLETED, TaskStatus.CANCELLED} and not maintenance_request.completed_at:
+        maintenance_request.completed_at = now
 
 
 def apply_status_fields(maintenance_request: MaintenanceRequest, new_status: TaskStatus) -> None:
